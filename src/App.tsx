@@ -22,8 +22,8 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       setSkip((prevSkip) => {
-        if (prevSkip > 1) {
-          return prevSkip - 1;
+        if (prevSkip > 1000) {
+          return prevSkip - 1000;
         } else {
           setBanner(false);
           clearInterval(interval); // Stop the interval when skip reaches 0
@@ -33,21 +33,21 @@ function App() {
     }, 1000);
 
     return () => clearInterval(interval); // Clear the interval on component unmount
-  }, [data]);
+  }, [data, banner]);
 
   useEffect(() => {
     if (data.showBanner == false) {
       setBanner(false);
     }
     setSkip(data.closetime);
-  }, [data.showBanner]);
+  }, [data.showBanner, banner]);
 
   useEffect(() => {
     setLoading(true);
 
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3003/api/fetch");
+        const response = await fetch("http://localhost:4020/api/fetch");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -83,9 +83,11 @@ function App() {
     return () => clearInterval(intervalId);
   }, []);
 
+
+
   return (
     <div className="h-[100vh]">
-      <Header data={data}/>
+      <Header data={data} setBanner={setBanner} setSkip={setSkip}/>
       <div className="relative ">
         {
           <div
@@ -93,7 +95,7 @@ function App() {
               data.showBanner ? "" : "hidden"
             } ${banner === true ? "block" : "hidden"}`}
           >
-            <Main data={data} loading={loading} skip={skip} />
+            <Main data={data} loading={loading} skip={skip} setBanner={setBanner} setSkip={setSkip}/>
           </div>
         }
         <div

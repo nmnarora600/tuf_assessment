@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Visiblity } from "./Visiblity"
+import DatePickerWithPresets from "./DateTime"
 
 interface SheetRightProps {
     title: string,
@@ -23,10 +24,12 @@ interface SheetRightProps {
     show:boolean,
     close:number,
     webLink:string,
+    setBanner: React.Dispatch<React.SetStateAction<boolean>>;
+    setSkip: React.Dispatch<React.SetStateAction<number>>;
     btnVariant?:"link" | "default" | "destructive" | "outline" | "secondary" | "ghost" |undefined| null
   }
 
-const SheetRight:React.FC<SheetRightProps>=({title, description, bludesc, openHeading , btnVariant, show, close, webLink})=> {
+const SheetRight:React.FC<SheetRightProps>=({title,setBanner, setSkip, description, bludesc, openHeading , btnVariant, show, close, webLink})=> {
     const[mainTitle, setmainTitle]=useState(title);
     const[mainDescription, setmainDescription]=useState(description);
     const[mainBludesc, setmainBludesc]=useState(bludesc);
@@ -49,7 +52,7 @@ setmainCloseTime(close)
 
    const submitData=async()=>{
 
-    const r= await fetch('http://localhost:3003/api/update',{
+    const r= await fetch('http://localhost:4020/api/update',{
       method:"POST",
       headers: {
         'Content-Type': 'application/json' // Set the content type to JSON
@@ -65,6 +68,8 @@ setmainCloseTime(close)
       toast("Content Updated Successfully",{
         description:"You will further see updated results in banner."
       })
+      setBanner(true);
+      setSkip(mainCloseTime);
     }
    }
     
@@ -125,9 +130,10 @@ setmainCloseTime(close)
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="closeTime" className="text-right">
-              Autoclose
+              Timeout
             </Label>
-            <Input id="closetime" name="closetime" value={mainCloseTime} className="col-span-3" onChange={handleChange} />
+            {/* <Input id="closetime" name="closetime" value={mainCloseTime} className="col-span-3" onChange={handleChange} /> */}
+            <DatePickerWithPresets setChangeTime={setmainCloseTime} initialTimeDifference={mainCloseTime}/>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="webLink" className="text-right">

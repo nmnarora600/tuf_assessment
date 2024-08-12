@@ -1,11 +1,28 @@
 
 
+import { useEffect, useState } from "react";
 import SheetRight from "./UpdateSheet";
 import Loader from "./loader";
 
 
+interface Data {
+  title: string;
+  description: string;
+  bludesc: string;
+  showBanner: boolean;
+  closetime: number;
+  weblink: string;
+}
 
-export default function Main({ data, loading, skip}:{skip:number,data:{title:string,description:string,bludesc:string, showBanner:boolean, closetime:number, weblink:string},loading:boolean}) {
+interface MainProps {
+  data: Data;
+  loading: boolean;
+  skip: number;
+  setBanner: React.Dispatch<React.SetStateAction<boolean>>;
+  setSkip: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function Main({ data, loading, skip, setBanner, setSkip }:MainProps) {
   
 
  
@@ -13,6 +30,26 @@ export default function Main({ data, loading, skip}:{skip:number,data:{title:str
   if(loading){
     return (<Loader/>);
   }
+
+  function getTimeDifference(ms: number) {
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    return { days, hours, minutes, seconds };
+  }
+
+  const[days, setDays]=useState(0);
+  const[hours, setHours]=useState(0);
+  const[minutes, setMinutes]=useState(0);
+  const[seconds, setSeconds]=useState(0);
+
+  useEffect(()=>{
+setDays(getTimeDifference(skip).days)
+setHours(getTimeDifference(skip).hours)
+setMinutes(getTimeDifference(skip).minutes)
+setSeconds(getTimeDifference(skip).seconds)
+  },[skip])
   return (
    <main className="">
       <div className="relative isolate bottom-0 h-[calc(100vh-7.5rem)] dark:bg-gray-900">
@@ -32,7 +69,13 @@ export default function Main({ data, loading, skip}:{skip:number,data:{title:str
         </div>
 
         {/* //timer */}
-<div className="absolute z-30 md:right-5 gradient-text md:top-5 opacity-75 hover:opacity-100 font-semibold  md:text-2xl  right-3 top-3">Auto Skip in {skip} sec</div>
+        <div className="absolute z-30 md:right-5 gradient-text md:top-5 opacity-75 hover:opacity-100 font-semibold md:text-2xl right-3 top-3">
+  Auto Skip in{" "}
+  {days > 0 && `${days} days `}
+  {(hours > 0 || days > 0) && `${hours} hours `}
+  {(minutes > 0 || hours > 0 || days > 0) && `${minutes} min. `}
+  {(seconds > 0 || minutes > 0 || hours > 0 || days > 0)  &&`${seconds} sec.`}
+</div>
 
 {/* //content */}
         <div className="py-12 sm:py-20 lg:pb-40 flex h-full">
@@ -58,7 +101,7 @@ export default function Main({ data, loading, skip}:{skip:number,data:{title:str
                   About the Dev
                 </a>
 
-                <SheetRight openHeading="Change the data" btnVariant="ghost" title={data.title} description={data.description} bludesc={data.bludesc} show={data.showBanner} close={data.closetime} webLink={data.weblink}/>
+                <SheetRight openHeading="Change the data" btnVariant="ghost" title={data.title} description={data.description} bludesc={data.bludesc} show={data.showBanner} close={data.closetime} webLink={data.weblink} setBanner={setBanner} setSkip={setSkip}/>
                   
                 
               </div>

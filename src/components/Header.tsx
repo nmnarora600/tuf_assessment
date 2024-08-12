@@ -4,8 +4,21 @@ import SheetRight from "./UpdateSheet";
 import UpgradeBanner from "./UpgradeBanner";
 import { Skeleton } from "./ui/skeleton";
 
+interface Data {
+  title: string;
+  description: string;
+  bludesc: string;
+  showBanner: boolean;
+  closetime: number;
+  weblink: string;
+}
 
-export default function Header({data}:{data:{title:string,description:string,bludesc:string, showBanner:boolean, closetime:number,weblink:string}}) {
+interface MainProps {
+  data: Data;
+  setBanner: React.Dispatch<React.SetStateAction<boolean>>;
+  setSkip: React.Dispatch<React.SetStateAction<number>>;
+}
+export default function Header({data, setBanner, setSkip}:MainProps) {
 
 
 
@@ -27,7 +40,7 @@ export default function Header({data}:{data:{title:string,description:string,blu
                 &nbsp;
                 {
 data?
-<SheetRight openHeading="Update Info" title={data.title} description={data.description} bludesc={data.bludesc} show={data.showBanner} close={data.closetime} webLink={data.weblink}/> :<Skeleton className="w-20 h-9"/>}
+<SheetRight openHeading="Update Info" title={data.title} description={data.description} bludesc={data.bludesc} show={data.showBanner} close={data.closetime} webLink={data.weblink} setBanner={setBanner} setSkip={setSkip}/> :<Skeleton className="w-20 h-9"/>}
               <DarkModeToggle />
       
             </div>
